@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MeetingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::resource('meetings', \App\Http\Controllers\MeetingController::class)
-    ->middleware('auth');
+Route::group(['prefix' => 'meetings', 'middleware' => ['auth']], function () {
+    Route::get('/', [MeetingController::class, 'index'])->name('meetings.index');
+    Route::get('/edit/{openingBalance}', [MeetingController::class, 'edit'])->name('meetings.edit');
+    Route::get('/destroy/{openingBalance}', [MeetingController::class, 'destroy'])->name('meetings.destroy');
+    Route::post('/store', [MeetingController::class, 'store'])->name('meetings.store');
+    Route::post('/update', [MeetingController::class, 'update'])->name('meetings.update');
+});

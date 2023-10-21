@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MeetingRequest;
+use App\Models\Attendee;
 use App\Models\Meeting;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,8 +15,8 @@ class MeetingController extends Controller
      */
     public function index()
     {
-        $attendees = User::all();
-        $meetings = Meeting::latest()->paginate(10);
+        $attendees = User::where('id', '!=', auth()->user()->id)->get();
+        $meetings = Meeting::with(['createdBy', 'attendees.user'])->latest()->paginate(10);
         return view('meetings.index', compact('meetings', 'attendees'));
     }
 
@@ -29,9 +31,24 @@ class MeetingController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MeetingRequest $request)
     {
-        //
+        //storing meeting data into database
+        $meeting = Meeting::create([
+            "subject" => $request->subject,
+            "time" => $request->time,
+            "date" => $request->date,
+            "created_by" => auth()->user()->id
+        ]);
+        //Saving the Attendees of the meeting
+        $attendees = [];
+        foreach ($request->attendees as $attendee) {
+            $attendees[] = ['user_id' => $attendee, 'meeting_id' => $meeting->id, 'created_at' => now()];
+        }
+        Attendee::insert($attendees); //bulk insert
+        //calling google calender API
+        //returning response
+        return response()->json(['success' => true]);
     }
 
     /**
