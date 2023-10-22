@@ -47,6 +47,7 @@
                                             @endforeach
                                         </ul>
                                     </td>
+
                                     <td>
                                         <a type="button" class="btn btn-sm btn-link edit_meeting"
                                            data-id="{{$meeting->id}}" data-page="{{$meetings->currentPage()}}"><span

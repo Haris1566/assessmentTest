@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('meetings', function (Blueprint $table) {
             $table->id();
             $table->string('subject');
+            $table->string('google_event_id')->nullable();
             $table->time('time');
             $table->date('date');
             $table->text('description')->nullable();

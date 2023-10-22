@@ -6,6 +6,8 @@ use App\Http\Requests\MeetingRequest;
 use App\Models\Attendee;
 use App\Models\Meeting;
 use App\Models\User;
+use Carbon\Carbon;
+use Spatie\GoogleCalendar\Event;
 
 class MeetingController extends Controller
 {
@@ -37,7 +39,19 @@ class MeetingController extends Controller
             $attendees[] = ['user_id' => $attendee, 'meeting_id' => $meeting->id, 'created_at' => now()];
         }
         Attendee::insert($attendees); //bulk insert
+
         //calling google calender API
+        $startDateTime = $request->date . ' ' . $request->time;
+        $event = Event::create([
+            'name' => $request->subject,
+            'startDateTime' => Carbon::parse($startDateTime),
+            'endDateTime' => Carbon::parse($startDateTime)->addHour(),
+        ]);
+        //adding attendees to calender event
+        $this->addCalendarAttendees($meeting, $event);
+        //adding newly created google calendar event id to database so that we can use it to update if needed
+        $meeting->update(['google_event_id' => $event->id]);
+
         //returning response
         return response()->json(['success' => true]);
     }
@@ -86,6 +100,7 @@ class MeetingController extends Controller
      */
     public function destroy(Meeting $meeting, $currentPage)
     {
+
         //deleting  attendees
         $meeting->attendees()->delete();
         $meeting->delete();
@@ -97,10 +112,24 @@ class MeetingController extends Controller
 
     private function getCurrentPage($currentPage)
     {
-        $paginator = Meeting::paginate(10,['id']);
+        $paginator = Meeting::paginate(10, ['id']);
         if ($currentPage <= $paginator->lastPage()) {
             return $currentPage;
         }
         return $paginator->lastPage();
+    }
+
+    private function addCalendarAttendees(Meeting $meeting, $event)
+    {
+        // egar loading meeting relationships
+        $meeting->load(['attendees.user']);
+        foreach ($meeting->attendees as $attendee) {
+            $event->addAttendee([
+                'email' => $attendee->user->email,
+                'name' => $attendee->user->name,
+                'comment' => 'Lorum ipsum',
+                'responseStatus' => 'needsAction',
+            ]);
+        }
     }
 }

@@ -11,7 +11,7 @@ class Meeting extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["subject", "time", "date", "description", "created_by"];
+    protected $fillable = ["subject", "time", "google_event_id", "date", "description", "created_by"];
     protected $casts = [
         'date' => 'datetime'];
 
