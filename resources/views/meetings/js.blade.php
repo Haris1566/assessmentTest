@@ -105,13 +105,13 @@
         var del_id = $(this).data('id');
         var url = "{{ route('meetings.destroy', ':id') }}";
         url = url.replace(':id', del_id);
-        if (confirm('Are You Sure To Delete The Product Category?')) {
+        if (confirm('Are You Sure To Delete The Meeting?')) {
             $.ajax({
                 url: url,
                 type: "GET",
                 success: function (response) {
                     if (response.success) {
-                        alertify.success("Category Deleted Successfully!");
+                        alertify.success("Meeting Deleted Successfully!");
                         window.location.reload();
                     } else {
                         alertify.error("Something Went Wrong!");

@@ -84,6 +84,9 @@ class MeetingController extends Controller
      */
     public function destroy(Meeting $meeting)
     {
-        //
+        //deleting  attendees
+        $meeting->attendees()->delete();
+        $meeting->delete();
+        return response()->json(['success' => true]);
     }
 }

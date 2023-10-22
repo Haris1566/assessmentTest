@@ -49,14 +49,14 @@
                                     </td>
                                     <td>
                                         <a type="button" class="btn btn-sm btn-link edit_meeting"
-                                           data-id="{{$meeting->id}}"><span class="text-primary">Edit</span></a>
+                                           data-id="{{$meeting->id}}"><span class="text-dark">Edit</span></a>
                                         <a type="button" class="btn btn-sm btn-link delete_meeting"
                                            data-id="{{$meeting->id}}"><span class="text-danger">Delete</span></a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6">No Meeting Available</td>
+                                    <td colspan="6" class="text-center">No Meeting Available</td>
                                 </tr>
                             @endforelse
                             </tbody>
