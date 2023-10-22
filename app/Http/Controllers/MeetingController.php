@@ -100,7 +100,10 @@ class MeetingController extends Controller
      */
     public function destroy(Meeting $meeting, $currentPage)
     {
-
+        //deleting google calendar event
+        if ($meeting->google_event_id != null) {
+            Event::find($meeting->google_event_id)->delete();
+        }
         //deleting  attendees
         $meeting->attendees()->delete();
         $meeting->delete();
