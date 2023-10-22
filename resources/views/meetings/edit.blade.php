@@ -48,6 +48,7 @@
     <div class="modal-footer">
         @csrf
         <input type="hidden" name="update_id" value="{{ $meeting->id }}">
+        <input type="hidden" name="currentPage" value="{{ $currentPage }}">
         <button type="submit" class="btn btn-info btn-sm" id="update_btn">Update Meeting</button>
         <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
     </div>

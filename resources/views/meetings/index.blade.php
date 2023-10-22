@@ -49,9 +49,10 @@
                                     </td>
                                     <td>
                                         <a type="button" class="btn btn-sm btn-link edit_meeting"
-                                           data-id="{{$meeting->id}}"><span class="text-dark">Edit</span></a>
+                                           data-id="{{$meeting->id}}" data-page="{{$meetings->currentPage()}}"><span
+                                                class="text-dark">Edit</span></a>
                                         <a type="button" class="btn btn-sm btn-link delete_meeting"
-                                           data-id="{{$meeting->id}}"><span class="text-danger">Delete</span></a>
+                                           data-id="{{$meeting->id}}" data-page="{{$meetings->currentPage()}}"><span class="text-danger">Delete</span></a>
                                     </td>
                                 </tr>
                             @empty

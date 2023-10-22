@@ -46,10 +46,10 @@ class MeetingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Meeting $meeting)
+    public function edit(Meeting $meeting, $currentPage)
     {
         $attendees = User::where('id', '!=', auth()->user()->id)->get();
-        return view('meetings.edit', compact('meeting', 'attendees'));
+        return view('meetings.edit', compact('meeting', 'attendees', 'currentPage'));
     }
 
     /**
@@ -75,18 +75,32 @@ class MeetingController extends Controller
         }
         Attendee::insert($attendees); //bulk insert
         //calling google calender API
-        //returning response
-        return response()->json(['success' => true]);
+        //getting the page number of pagination so that
+        // we can redirect on exact same page after deleting.
+        $redirectPage = $this->getCurrentPage($request->currentPage);
+        return response()->json(['success' => true, 'page' => $redirectPage]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Meeting $meeting)
+    public function destroy(Meeting $meeting, $currentPage)
     {
         //deleting  attendees
         $meeting->attendees()->delete();
         $meeting->delete();
-        return response()->json(['success' => true]);
+        //getting the page number of pagination so that
+        // we can redirect on exact same page after deleting.
+        $redirectPage = $this->getCurrentPage($currentPage);
+        return response()->json(['success' => true, 'page' => $redirectPage]);
+    }
+
+    private function getCurrentPage($currentPage)
+    {
+        $paginator = Meeting::paginate(10,['id']);
+        if ($currentPage <= $paginator->lastPage()) {
+            return $currentPage;
+        }
+        return $paginator->lastPage();
     }
 }
