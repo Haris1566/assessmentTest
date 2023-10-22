@@ -21,14 +21,6 @@ class MeetingController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(MeetingRequest $request)
@@ -51,20 +43,14 @@ class MeetingController extends Controller
         return response()->json(['success' => true]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Meeting $meeting)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Meeting $meeting)
     {
-        //
+        $attendees = User::where('id', '!=', auth()->user()->id)->get();
+        return view('meetings.edit', compact('meeting', 'attendees'));
     }
 
     /**

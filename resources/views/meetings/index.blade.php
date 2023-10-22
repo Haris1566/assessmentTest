@@ -33,7 +33,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($meetings as $meeting)
+                            @forelse($meetings as $meeting)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
 
@@ -47,9 +47,18 @@
                                             @endforeach
                                         </ul>
                                     </td>
-                                    <td>Action</td>
+                                    <td>
+                                        <a type="button" class="btn btn-sm btn-link edit_meeting"
+                                           data-id="{{$meeting->id}}"><span class="text-primary">Edit</span></a>
+                                        <a type="button" class="btn btn-sm btn-link delete_meeting"
+                                           data-id="{{$meeting->id}}"><span class="text-danger">Delete</span></a>
+                                    </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6">No Meeting Available</td>
+                                </tr>
+                            @endforelse
                             </tbody>
                         </table>
                         <div class="row mt-2">
@@ -115,6 +124,14 @@
                     </div>
                 </form>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Meeting Modal -->
+    <div class="modal fade" id="editMeetingModal">
+        <div class="modal-dialog">
+            <div class="modal-content" id="editMeetingData">
             </div>
         </div>
     </div>
