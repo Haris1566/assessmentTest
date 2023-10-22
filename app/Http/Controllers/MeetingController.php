@@ -88,7 +88,21 @@ class MeetingController extends Controller
             $attendees[] = ['user_id' => $attendee, 'meeting_id' => $meeting->id, 'created_at' => now()];
         }
         Attendee::insert($attendees); //bulk insert
+
         //calling google calender API
+        if ($meeting->google_event_id != null) {
+            $startDateTime = $request->date . ' ' . $request->time;
+            $event = Event::find($meeting->google_event_id)->update([
+                'name' => $request->subject,
+                'startDateTime' => Carbon::parse($startDateTime),
+                'endDateTime' => Carbon::parse($startDateTime)->addHour(),
+            ]);
+            //adding attendees to calender event
+            $this->addCalendarAttendees($meeting, $event);
+            //adding newly created google calendar event id to database so that we can use it to update if needed
+            $meeting->update(['google_event_id' => $event->id]);
+        }
+
         //getting the page number of pagination so that
         // we can redirect on exact same page after deleting.
         $redirectPage = $this->getCurrentPage($request->currentPage);
