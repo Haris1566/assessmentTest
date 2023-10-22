@@ -6,7 +6,6 @@ use App\Http\Requests\MeetingRequest;
 use App\Models\Attendee;
 use App\Models\Meeting;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class MeetingController extends Controller
 {
@@ -56,9 +55,28 @@ class MeetingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Meeting $meeting)
+    public function update(MeetingRequest $request)
     {
-        //
+        //find the meeting
+        $meeting = Meeting::with('attendees')->find($request->update_id);
+        //Update meeting data into database
+        $meeting->update([
+            "subject" => $request->subject,
+            "time" => $request->time,
+            "date" => $request->date,
+            "created_by" => auth()->user()->id
+        ]);
+        //Delete old attendees
+        $meeting->attendees()->delete();
+        //Saving the Attendees of the meeting
+        $attendees = [];
+        foreach ($request->attendees as $attendee) {
+            $attendees[] = ['user_id' => $attendee, 'meeting_id' => $meeting->id, 'created_at' => now()];
+        }
+        Attendee::insert($attendees); //bulk insert
+        //calling google calender API
+        //returning response
+        return response()->json(['success' => true]);
     }
 
     /**

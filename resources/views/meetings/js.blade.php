@@ -64,7 +64,7 @@
             }
         });
     });
-    $(document).on('submit', '#update_product_category_form', function (e) {
+    $(document).on('submit', '#update_meeting_form', function (e) {
         e.preventDefault();
         $.ajax({
             url: "{{ route('meetings.update') }}",
